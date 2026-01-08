@@ -90,3 +90,16 @@ fix: 홈 화면 크래시 수정
 refactor: 사용자 인증 로직 분리
 chore: flutter 버전 업그레이드
 ```
+
+## Custom Agents
+
+`.claude/agents/` 디렉토리에 커스텀 에이전트가 정의되어 있습니다.
+
+| Agent | 설명 |
+|-------|------|
+| `mobile-developer` | 시니어 모바일 개발자 - 크로스 플랫폼 앱 개발, 성능 최적화, 네이티브 통합, 앱스토어 배포 |
+| `flutter-mobile-developer` | Flutter 전문 개발자 - Flutter/Dart 심화, 위젯 최적화, 플랫폼 채널 |
+| `ui-designer` | Flutter UI 디자이너 - Material 3, Cupertino, 위젯 아키텍처, 반응형 레이아웃, 다크모드 |
+| `product-manager` | 모바일 PM - 앱 전략, ASO, 사용자 리서치, 로드맵, 앱스토어 성공 |
+| `prompt-engineer` | 모바일 AI 프롬프트 - LLM 통합, 온디바이스 AI, 대화형 UX |
+| `ai-engineer` | 모바일 AI 엔지니어 - TFLite, ML Kit, 클라우드 AI, 온디바이스 추론 |
