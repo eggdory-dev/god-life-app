@@ -1,9 +1,22 @@
 import 'package:flutter/material.dart';
 import 'app_colors.dart';
 import 'app_text_styles.dart';
+import '../constants/enums.dart';
 
 class AppThemeData {
-  static ThemeData faithTheme() {
+  /// Returns light theme based on selected app theme (Faith/Universal)
+  static ThemeData lightTheme(AppTheme mode) {
+    return mode == AppTheme.faith ? _faithTheme() : _universalTheme();
+  }
+
+  /// Returns dark theme based on selected app theme (Faith/Universal)
+  static ThemeData darkTheme(AppTheme mode) {
+    // For now, return same as light theme
+    // Dark mode will be implemented later
+    return mode == AppTheme.faith ? _faithTheme() : _universalTheme();
+  }
+
+  static ThemeData _faithTheme() {
     return ThemeData(
       useMaterial3: true,
       colorScheme: ColorScheme.fromSeed(
@@ -72,7 +85,7 @@ class AppThemeData {
     );
   }
 
-  static ThemeData universalTheme() {
+  static ThemeData _universalTheme() {
     return ThemeData(
       useMaterial3: true,
       colorScheme: ColorScheme.fromSeed(

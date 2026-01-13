@@ -26,6 +26,7 @@ mixin _$Failure {
     required TResult Function(String message, Map<String, String>? errors)
         validation,
     required TResult Function(String message) notFound,
+    required TResult Function(String message) business,
     required TResult Function(String message, DateTime? retryAfter)
         rateLimitExceeded,
     required TResult Function(String message) unknown,
@@ -39,6 +40,7 @@ mixin _$Failure {
     TResult? Function(String message)? authentication,
     TResult? Function(String message, Map<String, String>? errors)? validation,
     TResult? Function(String message)? notFound,
+    TResult? Function(String message)? business,
     TResult? Function(String message, DateTime? retryAfter)? rateLimitExceeded,
     TResult? Function(String message)? unknown,
   }) =>
@@ -51,6 +53,7 @@ mixin _$Failure {
     TResult Function(String message)? authentication,
     TResult Function(String message, Map<String, String>? errors)? validation,
     TResult Function(String message)? notFound,
+    TResult Function(String message)? business,
     TResult Function(String message, DateTime? retryAfter)? rateLimitExceeded,
     TResult Function(String message)? unknown,
     required TResult orElse(),
@@ -64,6 +67,7 @@ mixin _$Failure {
     required TResult Function(AuthenticationFailure value) authentication,
     required TResult Function(ValidationFailure value) validation,
     required TResult Function(NotFoundFailure value) notFound,
+    required TResult Function(BusinessFailure value) business,
     required TResult Function(RateLimitFailure value) rateLimitExceeded,
     required TResult Function(UnknownFailure value) unknown,
   }) =>
@@ -76,6 +80,7 @@ mixin _$Failure {
     TResult? Function(AuthenticationFailure value)? authentication,
     TResult? Function(ValidationFailure value)? validation,
     TResult? Function(NotFoundFailure value)? notFound,
+    TResult? Function(BusinessFailure value)? business,
     TResult? Function(RateLimitFailure value)? rateLimitExceeded,
     TResult? Function(UnknownFailure value)? unknown,
   }) =>
@@ -88,6 +93,7 @@ mixin _$Failure {
     TResult Function(AuthenticationFailure value)? authentication,
     TResult Function(ValidationFailure value)? validation,
     TResult Function(NotFoundFailure value)? notFound,
+    TResult Function(BusinessFailure value)? business,
     TResult Function(RateLimitFailure value)? rateLimitExceeded,
     TResult Function(UnknownFailure value)? unknown,
     required TResult orElse(),
@@ -212,6 +218,7 @@ class _$ServerFailureImpl implements ServerFailure {
     required TResult Function(String message, Map<String, String>? errors)
         validation,
     required TResult Function(String message) notFound,
+    required TResult Function(String message) business,
     required TResult Function(String message, DateTime? retryAfter)
         rateLimitExceeded,
     required TResult Function(String message) unknown,
@@ -228,6 +235,7 @@ class _$ServerFailureImpl implements ServerFailure {
     TResult? Function(String message)? authentication,
     TResult? Function(String message, Map<String, String>? errors)? validation,
     TResult? Function(String message)? notFound,
+    TResult? Function(String message)? business,
     TResult? Function(String message, DateTime? retryAfter)? rateLimitExceeded,
     TResult? Function(String message)? unknown,
   }) {
@@ -243,6 +251,7 @@ class _$ServerFailureImpl implements ServerFailure {
     TResult Function(String message)? authentication,
     TResult Function(String message, Map<String, String>? errors)? validation,
     TResult Function(String message)? notFound,
+    TResult Function(String message)? business,
     TResult Function(String message, DateTime? retryAfter)? rateLimitExceeded,
     TResult Function(String message)? unknown,
     required TResult orElse(),
@@ -262,6 +271,7 @@ class _$ServerFailureImpl implements ServerFailure {
     required TResult Function(AuthenticationFailure value) authentication,
     required TResult Function(ValidationFailure value) validation,
     required TResult Function(NotFoundFailure value) notFound,
+    required TResult Function(BusinessFailure value) business,
     required TResult Function(RateLimitFailure value) rateLimitExceeded,
     required TResult Function(UnknownFailure value) unknown,
   }) {
@@ -277,6 +287,7 @@ class _$ServerFailureImpl implements ServerFailure {
     TResult? Function(AuthenticationFailure value)? authentication,
     TResult? Function(ValidationFailure value)? validation,
     TResult? Function(NotFoundFailure value)? notFound,
+    TResult? Function(BusinessFailure value)? business,
     TResult? Function(RateLimitFailure value)? rateLimitExceeded,
     TResult? Function(UnknownFailure value)? unknown,
   }) {
@@ -292,6 +303,7 @@ class _$ServerFailureImpl implements ServerFailure {
     TResult Function(AuthenticationFailure value)? authentication,
     TResult Function(ValidationFailure value)? validation,
     TResult Function(NotFoundFailure value)? notFound,
+    TResult Function(BusinessFailure value)? business,
     TResult Function(RateLimitFailure value)? rateLimitExceeded,
     TResult Function(UnknownFailure value)? unknown,
     required TResult orElse(),
@@ -391,6 +403,7 @@ class _$NetworkFailureImpl implements NetworkFailure {
     required TResult Function(String message, Map<String, String>? errors)
         validation,
     required TResult Function(String message) notFound,
+    required TResult Function(String message) business,
     required TResult Function(String message, DateTime? retryAfter)
         rateLimitExceeded,
     required TResult Function(String message) unknown,
@@ -407,6 +420,7 @@ class _$NetworkFailureImpl implements NetworkFailure {
     TResult? Function(String message)? authentication,
     TResult? Function(String message, Map<String, String>? errors)? validation,
     TResult? Function(String message)? notFound,
+    TResult? Function(String message)? business,
     TResult? Function(String message, DateTime? retryAfter)? rateLimitExceeded,
     TResult? Function(String message)? unknown,
   }) {
@@ -422,6 +436,7 @@ class _$NetworkFailureImpl implements NetworkFailure {
     TResult Function(String message)? authentication,
     TResult Function(String message, Map<String, String>? errors)? validation,
     TResult Function(String message)? notFound,
+    TResult Function(String message)? business,
     TResult Function(String message, DateTime? retryAfter)? rateLimitExceeded,
     TResult Function(String message)? unknown,
     required TResult orElse(),
@@ -441,6 +456,7 @@ class _$NetworkFailureImpl implements NetworkFailure {
     required TResult Function(AuthenticationFailure value) authentication,
     required TResult Function(ValidationFailure value) validation,
     required TResult Function(NotFoundFailure value) notFound,
+    required TResult Function(BusinessFailure value) business,
     required TResult Function(RateLimitFailure value) rateLimitExceeded,
     required TResult Function(UnknownFailure value) unknown,
   }) {
@@ -456,6 +472,7 @@ class _$NetworkFailureImpl implements NetworkFailure {
     TResult? Function(AuthenticationFailure value)? authentication,
     TResult? Function(ValidationFailure value)? validation,
     TResult? Function(NotFoundFailure value)? notFound,
+    TResult? Function(BusinessFailure value)? business,
     TResult? Function(RateLimitFailure value)? rateLimitExceeded,
     TResult? Function(UnknownFailure value)? unknown,
   }) {
@@ -471,6 +488,7 @@ class _$NetworkFailureImpl implements NetworkFailure {
     TResult Function(AuthenticationFailure value)? authentication,
     TResult Function(ValidationFailure value)? validation,
     TResult Function(NotFoundFailure value)? notFound,
+    TResult Function(BusinessFailure value)? business,
     TResult Function(RateLimitFailure value)? rateLimitExceeded,
     TResult Function(UnknownFailure value)? unknown,
     required TResult orElse(),
@@ -567,6 +585,7 @@ class _$CacheFailureImpl implements CacheFailure {
     required TResult Function(String message, Map<String, String>? errors)
         validation,
     required TResult Function(String message) notFound,
+    required TResult Function(String message) business,
     required TResult Function(String message, DateTime? retryAfter)
         rateLimitExceeded,
     required TResult Function(String message) unknown,
@@ -583,6 +602,7 @@ class _$CacheFailureImpl implements CacheFailure {
     TResult? Function(String message)? authentication,
     TResult? Function(String message, Map<String, String>? errors)? validation,
     TResult? Function(String message)? notFound,
+    TResult? Function(String message)? business,
     TResult? Function(String message, DateTime? retryAfter)? rateLimitExceeded,
     TResult? Function(String message)? unknown,
   }) {
@@ -598,6 +618,7 @@ class _$CacheFailureImpl implements CacheFailure {
     TResult Function(String message)? authentication,
     TResult Function(String message, Map<String, String>? errors)? validation,
     TResult Function(String message)? notFound,
+    TResult Function(String message)? business,
     TResult Function(String message, DateTime? retryAfter)? rateLimitExceeded,
     TResult Function(String message)? unknown,
     required TResult orElse(),
@@ -617,6 +638,7 @@ class _$CacheFailureImpl implements CacheFailure {
     required TResult Function(AuthenticationFailure value) authentication,
     required TResult Function(ValidationFailure value) validation,
     required TResult Function(NotFoundFailure value) notFound,
+    required TResult Function(BusinessFailure value) business,
     required TResult Function(RateLimitFailure value) rateLimitExceeded,
     required TResult Function(UnknownFailure value) unknown,
   }) {
@@ -632,6 +654,7 @@ class _$CacheFailureImpl implements CacheFailure {
     TResult? Function(AuthenticationFailure value)? authentication,
     TResult? Function(ValidationFailure value)? validation,
     TResult? Function(NotFoundFailure value)? notFound,
+    TResult? Function(BusinessFailure value)? business,
     TResult? Function(RateLimitFailure value)? rateLimitExceeded,
     TResult? Function(UnknownFailure value)? unknown,
   }) {
@@ -647,6 +670,7 @@ class _$CacheFailureImpl implements CacheFailure {
     TResult Function(AuthenticationFailure value)? authentication,
     TResult Function(ValidationFailure value)? validation,
     TResult Function(NotFoundFailure value)? notFound,
+    TResult Function(BusinessFailure value)? business,
     TResult Function(RateLimitFailure value)? rateLimitExceeded,
     TResult Function(UnknownFailure value)? unknown,
     required TResult orElse(),
@@ -745,6 +769,7 @@ class _$AuthenticationFailureImpl implements AuthenticationFailure {
     required TResult Function(String message, Map<String, String>? errors)
         validation,
     required TResult Function(String message) notFound,
+    required TResult Function(String message) business,
     required TResult Function(String message, DateTime? retryAfter)
         rateLimitExceeded,
     required TResult Function(String message) unknown,
@@ -761,6 +786,7 @@ class _$AuthenticationFailureImpl implements AuthenticationFailure {
     TResult? Function(String message)? authentication,
     TResult? Function(String message, Map<String, String>? errors)? validation,
     TResult? Function(String message)? notFound,
+    TResult? Function(String message)? business,
     TResult? Function(String message, DateTime? retryAfter)? rateLimitExceeded,
     TResult? Function(String message)? unknown,
   }) {
@@ -776,6 +802,7 @@ class _$AuthenticationFailureImpl implements AuthenticationFailure {
     TResult Function(String message)? authentication,
     TResult Function(String message, Map<String, String>? errors)? validation,
     TResult Function(String message)? notFound,
+    TResult Function(String message)? business,
     TResult Function(String message, DateTime? retryAfter)? rateLimitExceeded,
     TResult Function(String message)? unknown,
     required TResult orElse(),
@@ -795,6 +822,7 @@ class _$AuthenticationFailureImpl implements AuthenticationFailure {
     required TResult Function(AuthenticationFailure value) authentication,
     required TResult Function(ValidationFailure value) validation,
     required TResult Function(NotFoundFailure value) notFound,
+    required TResult Function(BusinessFailure value) business,
     required TResult Function(RateLimitFailure value) rateLimitExceeded,
     required TResult Function(UnknownFailure value) unknown,
   }) {
@@ -810,6 +838,7 @@ class _$AuthenticationFailureImpl implements AuthenticationFailure {
     TResult? Function(AuthenticationFailure value)? authentication,
     TResult? Function(ValidationFailure value)? validation,
     TResult? Function(NotFoundFailure value)? notFound,
+    TResult? Function(BusinessFailure value)? business,
     TResult? Function(RateLimitFailure value)? rateLimitExceeded,
     TResult? Function(UnknownFailure value)? unknown,
   }) {
@@ -825,6 +854,7 @@ class _$AuthenticationFailureImpl implements AuthenticationFailure {
     TResult Function(AuthenticationFailure value)? authentication,
     TResult Function(ValidationFailure value)? validation,
     TResult Function(NotFoundFailure value)? notFound,
+    TResult Function(BusinessFailure value)? business,
     TResult Function(RateLimitFailure value)? rateLimitExceeded,
     TResult Function(UnknownFailure value)? unknown,
     required TResult orElse(),
@@ -940,6 +970,7 @@ class _$ValidationFailureImpl implements ValidationFailure {
     required TResult Function(String message, Map<String, String>? errors)
         validation,
     required TResult Function(String message) notFound,
+    required TResult Function(String message) business,
     required TResult Function(String message, DateTime? retryAfter)
         rateLimitExceeded,
     required TResult Function(String message) unknown,
@@ -956,6 +987,7 @@ class _$ValidationFailureImpl implements ValidationFailure {
     TResult? Function(String message)? authentication,
     TResult? Function(String message, Map<String, String>? errors)? validation,
     TResult? Function(String message)? notFound,
+    TResult? Function(String message)? business,
     TResult? Function(String message, DateTime? retryAfter)? rateLimitExceeded,
     TResult? Function(String message)? unknown,
   }) {
@@ -971,6 +1003,7 @@ class _$ValidationFailureImpl implements ValidationFailure {
     TResult Function(String message)? authentication,
     TResult Function(String message, Map<String, String>? errors)? validation,
     TResult Function(String message)? notFound,
+    TResult Function(String message)? business,
     TResult Function(String message, DateTime? retryAfter)? rateLimitExceeded,
     TResult Function(String message)? unknown,
     required TResult orElse(),
@@ -990,6 +1023,7 @@ class _$ValidationFailureImpl implements ValidationFailure {
     required TResult Function(AuthenticationFailure value) authentication,
     required TResult Function(ValidationFailure value) validation,
     required TResult Function(NotFoundFailure value) notFound,
+    required TResult Function(BusinessFailure value) business,
     required TResult Function(RateLimitFailure value) rateLimitExceeded,
     required TResult Function(UnknownFailure value) unknown,
   }) {
@@ -1005,6 +1039,7 @@ class _$ValidationFailureImpl implements ValidationFailure {
     TResult? Function(AuthenticationFailure value)? authentication,
     TResult? Function(ValidationFailure value)? validation,
     TResult? Function(NotFoundFailure value)? notFound,
+    TResult? Function(BusinessFailure value)? business,
     TResult? Function(RateLimitFailure value)? rateLimitExceeded,
     TResult? Function(UnknownFailure value)? unknown,
   }) {
@@ -1020,6 +1055,7 @@ class _$ValidationFailureImpl implements ValidationFailure {
     TResult Function(AuthenticationFailure value)? authentication,
     TResult Function(ValidationFailure value)? validation,
     TResult Function(NotFoundFailure value)? notFound,
+    TResult Function(BusinessFailure value)? business,
     TResult Function(RateLimitFailure value)? rateLimitExceeded,
     TResult Function(UnknownFailure value)? unknown,
     required TResult orElse(),
@@ -1119,6 +1155,7 @@ class _$NotFoundFailureImpl implements NotFoundFailure {
     required TResult Function(String message, Map<String, String>? errors)
         validation,
     required TResult Function(String message) notFound,
+    required TResult Function(String message) business,
     required TResult Function(String message, DateTime? retryAfter)
         rateLimitExceeded,
     required TResult Function(String message) unknown,
@@ -1135,6 +1172,7 @@ class _$NotFoundFailureImpl implements NotFoundFailure {
     TResult? Function(String message)? authentication,
     TResult? Function(String message, Map<String, String>? errors)? validation,
     TResult? Function(String message)? notFound,
+    TResult? Function(String message)? business,
     TResult? Function(String message, DateTime? retryAfter)? rateLimitExceeded,
     TResult? Function(String message)? unknown,
   }) {
@@ -1150,6 +1188,7 @@ class _$NotFoundFailureImpl implements NotFoundFailure {
     TResult Function(String message)? authentication,
     TResult Function(String message, Map<String, String>? errors)? validation,
     TResult Function(String message)? notFound,
+    TResult Function(String message)? business,
     TResult Function(String message, DateTime? retryAfter)? rateLimitExceeded,
     TResult Function(String message)? unknown,
     required TResult orElse(),
@@ -1169,6 +1208,7 @@ class _$NotFoundFailureImpl implements NotFoundFailure {
     required TResult Function(AuthenticationFailure value) authentication,
     required TResult Function(ValidationFailure value) validation,
     required TResult Function(NotFoundFailure value) notFound,
+    required TResult Function(BusinessFailure value) business,
     required TResult Function(RateLimitFailure value) rateLimitExceeded,
     required TResult Function(UnknownFailure value) unknown,
   }) {
@@ -1184,6 +1224,7 @@ class _$NotFoundFailureImpl implements NotFoundFailure {
     TResult? Function(AuthenticationFailure value)? authentication,
     TResult? Function(ValidationFailure value)? validation,
     TResult? Function(NotFoundFailure value)? notFound,
+    TResult? Function(BusinessFailure value)? business,
     TResult? Function(RateLimitFailure value)? rateLimitExceeded,
     TResult? Function(UnknownFailure value)? unknown,
   }) {
@@ -1199,6 +1240,7 @@ class _$NotFoundFailureImpl implements NotFoundFailure {
     TResult Function(AuthenticationFailure value)? authentication,
     TResult Function(ValidationFailure value)? validation,
     TResult Function(NotFoundFailure value)? notFound,
+    TResult Function(BusinessFailure value)? business,
     TResult Function(RateLimitFailure value)? rateLimitExceeded,
     TResult Function(UnknownFailure value)? unknown,
     required TResult orElse(),
@@ -1219,6 +1261,189 @@ abstract class NotFoundFailure implements Failure {
   @override
   @JsonKey(ignore: true)
   _$$NotFoundFailureImplCopyWith<_$NotFoundFailureImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$BusinessFailureImplCopyWith<$Res>
+    implements $FailureCopyWith<$Res> {
+  factory _$$BusinessFailureImplCopyWith(_$BusinessFailureImpl value,
+          $Res Function(_$BusinessFailureImpl) then) =
+      __$$BusinessFailureImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String message});
+}
+
+/// @nodoc
+class __$$BusinessFailureImplCopyWithImpl<$Res>
+    extends _$FailureCopyWithImpl<$Res, _$BusinessFailureImpl>
+    implements _$$BusinessFailureImplCopyWith<$Res> {
+  __$$BusinessFailureImplCopyWithImpl(
+      _$BusinessFailureImpl _value, $Res Function(_$BusinessFailureImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? message = null,
+  }) {
+    return _then(_$BusinessFailureImpl(
+      message: null == message
+          ? _value.message
+          : message // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$BusinessFailureImpl implements BusinessFailure {
+  const _$BusinessFailureImpl({required this.message});
+
+  @override
+  final String message;
+
+  @override
+  String toString() {
+    return 'Failure.business(message: $message)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$BusinessFailureImpl &&
+            (identical(other.message, message) || other.message == message));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, message);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$BusinessFailureImplCopyWith<_$BusinessFailureImpl> get copyWith =>
+      __$$BusinessFailureImplCopyWithImpl<_$BusinessFailureImpl>(
+          this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(String message, int? statusCode) server,
+    required TResult Function(String message) network,
+    required TResult Function(String message) cache,
+    required TResult Function(String message) authentication,
+    required TResult Function(String message, Map<String, String>? errors)
+        validation,
+    required TResult Function(String message) notFound,
+    required TResult Function(String message) business,
+    required TResult Function(String message, DateTime? retryAfter)
+        rateLimitExceeded,
+    required TResult Function(String message) unknown,
+  }) {
+    return business(message);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(String message, int? statusCode)? server,
+    TResult? Function(String message)? network,
+    TResult? Function(String message)? cache,
+    TResult? Function(String message)? authentication,
+    TResult? Function(String message, Map<String, String>? errors)? validation,
+    TResult? Function(String message)? notFound,
+    TResult? Function(String message)? business,
+    TResult? Function(String message, DateTime? retryAfter)? rateLimitExceeded,
+    TResult? Function(String message)? unknown,
+  }) {
+    return business?.call(message);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(String message, int? statusCode)? server,
+    TResult Function(String message)? network,
+    TResult Function(String message)? cache,
+    TResult Function(String message)? authentication,
+    TResult Function(String message, Map<String, String>? errors)? validation,
+    TResult Function(String message)? notFound,
+    TResult Function(String message)? business,
+    TResult Function(String message, DateTime? retryAfter)? rateLimitExceeded,
+    TResult Function(String message)? unknown,
+    required TResult orElse(),
+  }) {
+    if (business != null) {
+      return business(message);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(ServerFailure value) server,
+    required TResult Function(NetworkFailure value) network,
+    required TResult Function(CacheFailure value) cache,
+    required TResult Function(AuthenticationFailure value) authentication,
+    required TResult Function(ValidationFailure value) validation,
+    required TResult Function(NotFoundFailure value) notFound,
+    required TResult Function(BusinessFailure value) business,
+    required TResult Function(RateLimitFailure value) rateLimitExceeded,
+    required TResult Function(UnknownFailure value) unknown,
+  }) {
+    return business(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(ServerFailure value)? server,
+    TResult? Function(NetworkFailure value)? network,
+    TResult? Function(CacheFailure value)? cache,
+    TResult? Function(AuthenticationFailure value)? authentication,
+    TResult? Function(ValidationFailure value)? validation,
+    TResult? Function(NotFoundFailure value)? notFound,
+    TResult? Function(BusinessFailure value)? business,
+    TResult? Function(RateLimitFailure value)? rateLimitExceeded,
+    TResult? Function(UnknownFailure value)? unknown,
+  }) {
+    return business?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(ServerFailure value)? server,
+    TResult Function(NetworkFailure value)? network,
+    TResult Function(CacheFailure value)? cache,
+    TResult Function(AuthenticationFailure value)? authentication,
+    TResult Function(ValidationFailure value)? validation,
+    TResult Function(NotFoundFailure value)? notFound,
+    TResult Function(BusinessFailure value)? business,
+    TResult Function(RateLimitFailure value)? rateLimitExceeded,
+    TResult Function(UnknownFailure value)? unknown,
+    required TResult orElse(),
+  }) {
+    if (business != null) {
+      return business(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class BusinessFailure implements Failure {
+  const factory BusinessFailure({required final String message}) =
+      _$BusinessFailureImpl;
+
+  @override
+  String get message;
+  @override
+  @JsonKey(ignore: true)
+  _$$BusinessFailureImplCopyWith<_$BusinessFailureImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -1305,6 +1530,7 @@ class _$RateLimitFailureImpl implements RateLimitFailure {
     required TResult Function(String message, Map<String, String>? errors)
         validation,
     required TResult Function(String message) notFound,
+    required TResult Function(String message) business,
     required TResult Function(String message, DateTime? retryAfter)
         rateLimitExceeded,
     required TResult Function(String message) unknown,
@@ -1321,6 +1547,7 @@ class _$RateLimitFailureImpl implements RateLimitFailure {
     TResult? Function(String message)? authentication,
     TResult? Function(String message, Map<String, String>? errors)? validation,
     TResult? Function(String message)? notFound,
+    TResult? Function(String message)? business,
     TResult? Function(String message, DateTime? retryAfter)? rateLimitExceeded,
     TResult? Function(String message)? unknown,
   }) {
@@ -1336,6 +1563,7 @@ class _$RateLimitFailureImpl implements RateLimitFailure {
     TResult Function(String message)? authentication,
     TResult Function(String message, Map<String, String>? errors)? validation,
     TResult Function(String message)? notFound,
+    TResult Function(String message)? business,
     TResult Function(String message, DateTime? retryAfter)? rateLimitExceeded,
     TResult Function(String message)? unknown,
     required TResult orElse(),
@@ -1355,6 +1583,7 @@ class _$RateLimitFailureImpl implements RateLimitFailure {
     required TResult Function(AuthenticationFailure value) authentication,
     required TResult Function(ValidationFailure value) validation,
     required TResult Function(NotFoundFailure value) notFound,
+    required TResult Function(BusinessFailure value) business,
     required TResult Function(RateLimitFailure value) rateLimitExceeded,
     required TResult Function(UnknownFailure value) unknown,
   }) {
@@ -1370,6 +1599,7 @@ class _$RateLimitFailureImpl implements RateLimitFailure {
     TResult? Function(AuthenticationFailure value)? authentication,
     TResult? Function(ValidationFailure value)? validation,
     TResult? Function(NotFoundFailure value)? notFound,
+    TResult? Function(BusinessFailure value)? business,
     TResult? Function(RateLimitFailure value)? rateLimitExceeded,
     TResult? Function(UnknownFailure value)? unknown,
   }) {
@@ -1385,6 +1615,7 @@ class _$RateLimitFailureImpl implements RateLimitFailure {
     TResult Function(AuthenticationFailure value)? authentication,
     TResult Function(ValidationFailure value)? validation,
     TResult Function(NotFoundFailure value)? notFound,
+    TResult Function(BusinessFailure value)? business,
     TResult Function(RateLimitFailure value)? rateLimitExceeded,
     TResult Function(UnknownFailure value)? unknown,
     required TResult orElse(),
@@ -1484,6 +1715,7 @@ class _$UnknownFailureImpl implements UnknownFailure {
     required TResult Function(String message, Map<String, String>? errors)
         validation,
     required TResult Function(String message) notFound,
+    required TResult Function(String message) business,
     required TResult Function(String message, DateTime? retryAfter)
         rateLimitExceeded,
     required TResult Function(String message) unknown,
@@ -1500,6 +1732,7 @@ class _$UnknownFailureImpl implements UnknownFailure {
     TResult? Function(String message)? authentication,
     TResult? Function(String message, Map<String, String>? errors)? validation,
     TResult? Function(String message)? notFound,
+    TResult? Function(String message)? business,
     TResult? Function(String message, DateTime? retryAfter)? rateLimitExceeded,
     TResult? Function(String message)? unknown,
   }) {
@@ -1515,6 +1748,7 @@ class _$UnknownFailureImpl implements UnknownFailure {
     TResult Function(String message)? authentication,
     TResult Function(String message, Map<String, String>? errors)? validation,
     TResult Function(String message)? notFound,
+    TResult Function(String message)? business,
     TResult Function(String message, DateTime? retryAfter)? rateLimitExceeded,
     TResult Function(String message)? unknown,
     required TResult orElse(),
@@ -1534,6 +1768,7 @@ class _$UnknownFailureImpl implements UnknownFailure {
     required TResult Function(AuthenticationFailure value) authentication,
     required TResult Function(ValidationFailure value) validation,
     required TResult Function(NotFoundFailure value) notFound,
+    required TResult Function(BusinessFailure value) business,
     required TResult Function(RateLimitFailure value) rateLimitExceeded,
     required TResult Function(UnknownFailure value) unknown,
   }) {
@@ -1549,6 +1784,7 @@ class _$UnknownFailureImpl implements UnknownFailure {
     TResult? Function(AuthenticationFailure value)? authentication,
     TResult? Function(ValidationFailure value)? validation,
     TResult? Function(NotFoundFailure value)? notFound,
+    TResult? Function(BusinessFailure value)? business,
     TResult? Function(RateLimitFailure value)? rateLimitExceeded,
     TResult? Function(UnknownFailure value)? unknown,
   }) {
@@ -1564,6 +1800,7 @@ class _$UnknownFailureImpl implements UnknownFailure {
     TResult Function(AuthenticationFailure value)? authentication,
     TResult Function(ValidationFailure value)? validation,
     TResult Function(NotFoundFailure value)? notFound,
+    TResult Function(BusinessFailure value)? business,
     TResult Function(RateLimitFailure value)? rateLimitExceeded,
     TResult Function(UnknownFailure value)? unknown,
     required TResult orElse(),

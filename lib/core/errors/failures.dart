@@ -30,6 +30,10 @@ class Failure with _$Failure {
     required String message,
   }) = NotFoundFailure;
 
+  const factory Failure.business({
+    required String message,
+  }) = BusinessFailure;
+
   const factory Failure.rateLimitExceeded({
     required String message,
     DateTime? retryAfter,
@@ -49,6 +53,7 @@ extension FailureX on Failure {
       authentication: (message) => '인증이 필요합니다. 다시 로그인해주세요',
       validation: (message, _) => message,
       notFound: (message) => '요청하신 데이터를 찾을 수 없습니다',
+      business: (message) => message,
       rateLimitExceeded: (message, _) => '요청 한도를 초과했습니다. 잠시 후 다시 시도해주세요',
       unknown: (message) => '알 수 없는 오류가 발생했습니다',
     );
