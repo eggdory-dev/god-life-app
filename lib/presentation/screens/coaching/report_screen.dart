@@ -90,7 +90,7 @@ class ReportScreen extends ConsumerWidget {
 
     return Container(
       padding: const EdgeInsets.all(16),
-      color: colorScheme.primaryContainer.withOpacity(0.3),
+      color: colorScheme.primaryContainer.withValues(alpha: 0.3),
       child: Row(
         children: [
           Icon(

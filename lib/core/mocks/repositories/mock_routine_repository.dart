@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:dartz/dartz.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../core/constants/enums.dart';
@@ -14,15 +13,11 @@ import '../data/mock_routines.dart';
 /// Mock implementation of RoutineRepository
 /// Used for development before real API is ready
 class MockRoutineRepository implements RoutineRepository {
-  final SharedPreferences _prefs;
   final List<RoutineModel> _routines = [];
   final List<RoutineCompletionModel> _completions = [];
   final _uuid = const Uuid();
 
-  static const String _routinesKey = 'mock_routines';
-  static const String _completionsKey = 'mock_completions';
-
-  MockRoutineRepository(this._prefs) {
+  MockRoutineRepository() {
     _loadRoutines();
     _loadCompletions();
   }

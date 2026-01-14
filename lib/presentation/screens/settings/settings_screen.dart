@@ -194,7 +194,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       padding: const EdgeInsets.all(16),
       margin: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: colorScheme.primaryContainer.withOpacity(0.3),
+        color: colorScheme.primaryContainer.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
@@ -338,19 +338,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       ),
     );
 
-    if (confirmed == true && mounted) {
-      try {
-        await ref.read(authProvider.notifier).logout();
-        if (mounted) {
-          context.go('/login');
-        }
-      } catch (e) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('오류: ${e.toString()}')),
-          );
-        }
-      }
+    if (confirmed != true || !mounted) return;
+
+    try {
+      await ref.read(authProvider.notifier).logout();
+      if (!mounted) return;
+      context.go('/login');
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('오류: ${e.toString()}')),
+      );
     }
   }
 }

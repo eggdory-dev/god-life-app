@@ -194,7 +194,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 backgroundColor: colorScheme.primary,
                 foregroundColor: colorScheme.onPrimary,
                 disabledBackgroundColor:
-                    colorScheme.onSurfaceVariant.withOpacity(0.12),
+                    colorScheme.onSurfaceVariant.withValues(alpha: 0.12),
               ),
             ),
           ],
@@ -215,14 +215,13 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           .read(chatMessagesProvider(widget.conversationId).notifier)
           .sendMessage(message);
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(e.toString()),
-            backgroundColor: Theme.of(context).colorScheme.error,
-          ),
-        );
-      }
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.toString()),
+          backgroundColor: Theme.of(context).colorScheme.error,
+        ),
+      );
     } finally {
       if (mounted) {
         setState(() => _isSending = false);
@@ -238,13 +237,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
     final messages = messagesAsync.value;
     if (messages == null || messages.length < 4) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('리포트 생성을 위해서는 최소 4개 이상의 메시지가 필요합니다'),
-          ),
-        );
-      }
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('리포트 생성을 위해서는 최소 4개 이상의 메시지가 필요합니다'),
+        ),
+      );
       return;
     }
 
@@ -276,34 +274,34 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         generateReportProvider(conversationId: widget.conversationId).future,
       );
 
-      if (mounted) {
-        // Close loading dialog
-        Navigator.of(context).pop();
+      if (!mounted) return;
 
-        // Navigate to report screen
-        context.push('/coaching/report/${report.id}');
+      // Close loading dialog
+      Navigator.of(context).pop();
 
-        // Show success message
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('리포트가 생성되었습니다'),
-            backgroundColor: Colors.green,
-          ),
-        );
-      }
+      // Navigate to report screen
+      context.push('/coaching/report/${report.id}');
+
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('리포트가 생성되었습니다'),
+          backgroundColor: Colors.green,
+        ),
+      );
     } catch (e) {
-      if (mounted) {
-        // Close loading dialog
-        Navigator.of(context).pop();
+      if (!mounted) return;
 
-        // Show error message
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('오류: ${e.toString()}'),
-            backgroundColor: Theme.of(context).colorScheme.error,
-          ),
-        );
-      }
+      // Close loading dialog
+      Navigator.of(context).pop();
+
+      // Show error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('오류: ${e.toString()}'),
+          backgroundColor: Theme.of(context).colorScheme.error,
+        ),
+      );
     }
   }
 }

@@ -97,7 +97,7 @@ class MessageBubble extends StatelessWidget {
               child: Text(
                 _formatTime(message.timestamp),
                 style: textTheme.bodySmall?.copyWith(
-                  color: colorScheme.onSurfaceVariant.withOpacity(0.6),
+                  color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
                 ),
               ),
             ),

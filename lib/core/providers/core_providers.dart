@@ -66,13 +66,12 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
 
 /// Routine repository provider
 final routineRepositoryProvider = Provider<RoutineRepository>((ref) {
-  final prefs = ref.watch(sharedPreferencesProvider);
   // For now, always use mock
-  return MockRoutineRepository(prefs);
+  return MockRoutineRepository();
 
   // Future: Use feature flags to switch
   // if (FeatureFlags.useMockRoutines) {
-  //   return MockRoutineRepository(prefs);
+  //   return MockRoutineRepository();
   // }
   // return RoutineRepositoryImpl(
   //   ref.read(routineApiProvider),

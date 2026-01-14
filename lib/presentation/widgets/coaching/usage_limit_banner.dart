@@ -28,10 +28,10 @@ class UsageLimitBanner extends ConsumerWidget {
           width: double.infinity,
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
+            color: color.withValues(alpha: 0.1),
             border: Border(
               bottom: BorderSide(
-                color: color.withOpacity(0.3),
+                color: color.withValues(alpha: 0.3),
                 width: 1,
               ),
             ),

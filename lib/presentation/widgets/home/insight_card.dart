@@ -32,7 +32,7 @@ class InsightCard extends StatelessWidget {
             end: Alignment.bottomRight,
             colors: [
               colorScheme.primaryContainer,
-              colorScheme.primaryContainer.withOpacity(0.7),
+              colorScheme.primaryContainer.withValues(alpha: 0.7),
             ],
           ),
         ),
@@ -74,7 +74,7 @@ class InsightCard extends StatelessWidget {
               '- ${insight.source}',
               style: textTheme.bodyMedium?.copyWith(
                 fontStyle: FontStyle.italic,
-                color: colorScheme.onPrimaryContainer.withOpacity(0.7),
+                color: colorScheme.onPrimaryContainer.withValues(alpha: 0.7),
               ),
             ),
 
@@ -84,7 +84,7 @@ class InsightCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: colorScheme.surface.withOpacity(0.5),
+                  color: colorScheme.surface.withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Row(
