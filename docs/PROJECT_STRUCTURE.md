@@ -297,7 +297,7 @@ screens/
 │   ├── home_screen.dart                # 홈 대시보드
 │   └── widgets/
 │       ├── insight_card.dart           # 인사이트 카드
-│       ├── streak_widget.dart          # 스트릭 위젯
+│       ├── streak_widget.dart          # 연속 달성 위젯
 │       └── routine_summary.dart        # 루틴 요약
 ├── routine/
 │   ├── routine_list_screen.dart        # 루틴 목록
@@ -337,7 +337,7 @@ widgets/
 ├── routine/
 │   ├── routine_card.dart           # 루틴 카드
 │   ├── routine_progress.dart       # 루틴 진행률
-│   └── streak_badge.dart           # 스트릭 배지
+│   └── streak_badge.dart           # 연속 달성 배지
 ├── coaching/
 │   ├── coaching_input.dart         # 코칭 입력창
 │   └── suggestion_chip.dart        # 제안 칩
