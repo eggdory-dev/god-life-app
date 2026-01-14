@@ -26,8 +26,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     if (!mounted) return;
 
     // TODO: Navigate based on auth state
-    // For now, navigate to login screen
-    context.go('/login');
+    // For now, navigate to home screen to test GNB
+    context.go('/home');
   }
 
   @override

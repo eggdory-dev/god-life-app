@@ -13,13 +13,13 @@ import '../../presentation/screens/routine/routine_list_screen.dart';
 import '../../presentation/screens/routine/routine_form_screen.dart';
 import '../../presentation/screens/routine/routine_detail_screen.dart';
 import '../../presentation/screens/home/home_screen.dart';
-import '../../presentation/screens/home/statistics_screen.dart';
 import '../../presentation/screens/coaching/coaching_home_screen.dart';
 import '../../presentation/screens/coaching/chat_screen.dart';
 import '../../presentation/screens/coaching/report_screen.dart';
 import '../../presentation/screens/settings/settings_screen.dart';
 import '../../presentation/screens/settings/profile_edit_screen.dart';
 import '../../presentation/screens/settings/notification_settings_screen.dart';
+import '../../presentation/screens/main/main_shell_screen.dart';
 import '../../core/constants/enums.dart';
 
 /// GoRouter configuration for the app
@@ -35,12 +35,14 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const SplashScreen(),
       ),
 
-      // Onboarding routes (Week 3-4)
+      // Login screen
       GoRoute(
         path: '/login',
         name: 'login',
         builder: (context, state) => const LoginScreen(),
       ),
+
+      // Onboarding routes (Week 3-4)
       GoRoute(
         path: '/onboarding',
         name: 'onboarding',
@@ -115,84 +117,94 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         ],
       ),
 
-      // Main app routes
-      GoRoute(
-        path: '/home',
-        name: 'home',
-        builder: (context, state) => const HomeScreen(),
-        routes: [
-          GoRoute(
-            path: 'statistics',
-            name: 'statistics',
-            builder: (context, state) => const StatisticsScreen(),
+      // Main app shell with bottom navigation
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          return MainShellScreen(navigationShell: navigationShell);
+        },
+        branches: [
+          // Home branch
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/home',
+                name: 'home',
+                builder: (context, state) => const HomeScreen(),
+              ),
+            ],
+          ),
+          // Routine branch
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/routine',
+                name: 'routine',
+                builder: (context, state) => const RoutineListScreen(),
+              ),
+            ],
+          ),
+          // Coaching branch
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/coaching',
+                name: 'coaching',
+                builder: (context, state) => const CoachingHomeScreen(),
+              ),
+            ],
+          ),
+          // Settings branch
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/settings',
+                name: 'settings',
+                builder: (context, state) => const SettingsScreen(),
+              ),
+            ],
           ),
         ],
       ),
 
-      // Routine routes (Week 5-6)
+      // Detail routes (outside bottom navigation)
       GoRoute(
-        path: '/routine',
-        name: 'routine',
-        builder: (context, state) => const RoutineListScreen(),
-        routes: [
-          GoRoute(
-            path: 'create',
-            name: 'routine-create',
-            builder: (context, state) => const RoutineFormScreen(),
-          ),
-          GoRoute(
-            path: ':id',
-            name: 'routine-detail',
-            builder: (context, state) {
-              final id = state.pathParameters['id'] ?? '';
-              return RoutineDetailScreen(routineId: id);
-            },
-          ),
-        ],
+        path: '/routine/create',
+        name: 'routine-create',
+        builder: (context, state) => const RoutineFormScreen(),
       ),
-
-      // Coaching routes (Week 8-9)
       GoRoute(
-        path: '/coaching',
-        name: 'coaching',
-        builder: (context, state) => const CoachingHomeScreen(),
-        routes: [
-          GoRoute(
-            path: 'chat/:id',
-            name: 'coaching-chat',
-            builder: (context, state) {
-              final id = state.pathParameters['id'] ?? '';
-              return ChatScreen(conversationId: id);
-            },
-          ),
-          GoRoute(
-            path: 'report/:id',
-            name: 'coaching-report',
-            builder: (context, state) {
-              final id = state.pathParameters['id'] ?? '';
-              return ReportScreen(reportId: id);
-            },
-          ),
-        ],
+        path: '/routine/:id',
+        name: 'routine-detail',
+        builder: (context, state) {
+          final id = state.pathParameters['id'] ?? '';
+          return RoutineDetailScreen(routineId: id);
+        },
       ),
-
-      // Settings routes (Week 10)
       GoRoute(
-        path: '/settings',
-        name: 'settings',
-        builder: (context, state) => const SettingsScreen(),
-        routes: [
-          GoRoute(
-            path: 'profile',
-            name: 'settings-profile',
-            builder: (context, state) => const ProfileEditScreen(),
-          ),
-          GoRoute(
-            path: 'notifications',
-            name: 'settings-notifications',
-            builder: (context, state) => const NotificationSettingsScreen(),
-          ),
-        ],
+        path: '/coaching/chat/:id',
+        name: 'coaching-chat',
+        builder: (context, state) {
+          final id = state.pathParameters['id'] ?? '';
+          return ChatScreen(conversationId: id);
+        },
+      ),
+      GoRoute(
+        path: '/coaching/report/:id',
+        name: 'coaching-report',
+        builder: (context, state) {
+          final id = state.pathParameters['id'] ?? '';
+          return ReportScreen(reportId: id);
+        },
+      ),
+      GoRoute(
+        path: '/settings/profile',
+        name: 'settings-profile',
+        builder: (context, state) => const ProfileEditScreen(),
+      ),
+      GoRoute(
+        path: '/settings/notifications',
+        name: 'settings-notifications',
+        builder: (context, state) => const NotificationSettingsScreen(),
       ),
     ],
     errorBuilder: (context, state) => Scaffold(

@@ -25,7 +25,7 @@ class HomeScreen extends ConsumerWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
-            onPressed: () => context.push('/settings'),
+            onPressed: () => context.go('/settings'),
           ),
         ],
       ),
@@ -61,10 +61,6 @@ class HomeScreen extends ConsumerWidget {
 
                 // Today's Routines
                 _buildTodayRoutines(context, ref),
-                const SizedBox(height: 16),
-
-                // Quick Actions
-                _buildQuickActions(context),
                 const SizedBox(height: 80),
               ],
             ),
@@ -218,7 +214,7 @@ class HomeScreen extends ConsumerWidget {
                           ),
                           _buildProgressStat(
                             context,
-                            '스트릭',
+                            '연속 달성',
                             '$maxStreak일',
                             Icons.local_fire_department,
                             Colors.orange,
@@ -285,7 +281,7 @@ class HomeScreen extends ConsumerWidget {
                   ),
             ),
             TextButton(
-              onPressed: () => context.push('/routine'),
+              onPressed: () => context.go('/routine'),
               child: const Text('전체 보기'),
             ),
           ],
@@ -362,82 +358,6 @@ class HomeScreen extends ConsumerWidget {
           error: (_, __) => const Text('루틴을 불러올 수 없습니다'),
         ),
       ],
-    );
-  }
-
-  Widget _buildQuickActions(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          '빠른 시작',
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-        ),
-        const SizedBox(height: 12),
-        Row(
-          children: [
-            Expanded(
-              child: _buildQuickActionCard(
-                context,
-                '루틴 관리',
-                Icons.event_note,
-                () => context.push('/routine'),
-              ),
-            ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: _buildQuickActionCard(
-                context,
-                '통계',
-                Icons.bar_chart,
-                () => context.push('/home/statistics'),
-              ),
-            ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: _buildQuickActionCard(
-                context,
-                'AI 코칭',
-                Icons.chat,
-                () => context.push('/coaching'),
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildQuickActionCard(
-    BuildContext context,
-    String label,
-    IconData icon,
-    VoidCallback onTap,
-  ) {
-    return Card(
-      child: InkWell(
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              Icon(
-                icon,
-                size: 32,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                label,
-                style: const TextStyle(fontSize: 12),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }

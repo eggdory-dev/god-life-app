@@ -214,14 +214,14 @@ class RoutineDetailScreen extends ConsumerWidget {
                     children: [
                       _buildStatItem(
                         context,
-                        '현재 스트릭',
+                        '현재 연속 달성',
                         '${stats.currentStreak}일',
                         Icons.local_fire_department,
                         Colors.orange,
                       ),
                       _buildStatItem(
                         context,
-                        '최대 스트릭',
+                        '최대 연속 달성',
                         '${stats.maxStreak}일',
                         Icons.emoji_events,
                         Colors.amber,

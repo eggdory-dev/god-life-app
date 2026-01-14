@@ -185,7 +185,7 @@ class StatisticsScreen extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '스트릭 정보',
+              '연속 달성 정보',
               style: textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
@@ -196,14 +196,14 @@ class StatisticsScreen extends ConsumerWidget {
               children: [
                 _buildStat(
                   context,
-                  '현재 스트릭',
+                  '현재 연속 달성',
                   '${stats.currentStreak}일',
                   Icons.local_fire_department,
                   Colors.orange,
                 ),
                 _buildStat(
                   context,
-                  '최고 스트릭',
+                  '최고 연속 달성',
                   '${stats.maxStreak}일',
                   Icons.emoji_events,
                   Colors.amber,
