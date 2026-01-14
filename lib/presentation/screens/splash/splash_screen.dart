@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 /// Splash screen shown on app startup
 /// Will navigate to login or home based on auth state (Week 3-4)
@@ -25,7 +26,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     if (!mounted) return;
 
     // TODO: Navigate based on auth state
-    // For now, stay on splash (will implement navigation in Week 3-4)
+    // For now, navigate to login screen
+    context.go('/login');
   }
 
   @override
