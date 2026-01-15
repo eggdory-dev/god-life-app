@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../constants/app_constants.dart';
 
 class AuthInterceptor extends Interceptor {
@@ -43,13 +45,32 @@ class AuthInterceptor extends Interceptor {
 
   Future<bool> _refreshToken() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final refreshToken = prefs.getString(StorageKeys.refreshToken);
+      final supabase = Supabase.instance.client;
+      final response = await supabase.auth.refreshSession();
 
-      if (refreshToken == null) return false;
+      if (response.session != null) {
+        // Save new tokens
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString(
+          StorageKeys.accessToken,
+          response.session!.accessToken,
+        );
+        await prefs.setString(
+          StorageKeys.refreshToken,
+          response.session!.refreshToken ?? '',
+        );
+        debugPrint('✅ Token refreshed successfully');
+        return true;
+      }
 
-      return true;
+      return false;
+    } on AuthException catch (e) {
+      debugPrint('🔴 Token refresh failed: ${e.message}');
+      // Refresh failed → logout
+      await Supabase.instance.client.auth.signOut();
+      return false;
     } catch (e) {
+      debugPrint('🔴 Token refresh error: $e');
       return false;
     }
   }

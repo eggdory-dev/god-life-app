@@ -21,12 +21,51 @@ import '../../presentation/screens/settings/profile_edit_screen.dart';
 import '../../presentation/screens/settings/notification_settings_screen.dart';
 import '../../presentation/screens/main/main_shell_screen.dart';
 import '../../core/constants/enums.dart';
+import '../../presentation/providers/auth/auth_provider.dart';
+import 'refresh_stream.dart';
 
 /// GoRouter configuration for the app
 final goRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     initialLocation: '/',
     debugLogDiagnostics: true,
+    refreshListenable: GoRouterRefreshStream(
+      ref.watch(currentUserStreamProvider.stream),
+    ),
+    redirect: (context, state) {
+      final user = ref.watch(authProvider).value;
+      final isAuthenticated = user != null;
+
+      final isSplash = state.matchedLocation == '/';
+      final isLogin = state.matchedLocation == '/login';
+      final isOnboarding = state.matchedLocation.startsWith('/onboarding');
+      final isProtected = !['/login', '/'].contains(state.matchedLocation);
+
+      // Allow splash to run its own logic
+      if (isSplash) return null;
+
+      // Unauthenticated user trying to access protected route
+      if (!isAuthenticated && isProtected) {
+        return '/login';
+      }
+
+      // Authenticated user
+      if (isAuthenticated) {
+        // Already on login page → redirect to app
+        if (isLogin) {
+          final onboardingDone = ref.watch(onboardingCompletedProvider).value ?? false;
+          return onboardingDone ? '/home' : '/onboarding';
+        }
+
+        // Trying to access app but onboarding not done
+        if (!isOnboarding && isProtected) {
+          final onboardingDone = ref.watch(onboardingCompletedProvider).value ?? false;
+          if (!onboardingDone) return '/onboarding';
+        }
+      }
+
+      return null; // Allow navigation
+    },
     routes: [
       // Splash screen
       GoRoute(

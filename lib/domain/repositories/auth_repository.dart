@@ -12,6 +12,19 @@ abstract class AuthRepository {
   /// Stream of authentication state changes
   Stream<User?> get authStateChanges;
 
+  /// Sign up with email
+  Future<Either<Failure, User>> signUpWithEmail({
+    required String email,
+    required String password,
+    required String name,
+  });
+
+  /// Sign in with email
+  Future<Either<Failure, User>> signInWithEmail({
+    required String email,
+    required String password,
+  });
+
   /// Login with Google
   Future<Either<Failure, User>> loginWithGoogle();
 
@@ -24,6 +37,9 @@ abstract class AuthRepository {
   /// Logout
   Future<Either<Failure, void>> logout();
 
+  /// Reset password
+  Future<Either<Failure, void>> resetPassword(String email);
+
   /// Update user profile
   Future<Either<Failure, User>> updateProfile({
     String? name,
@@ -35,4 +51,15 @@ abstract class AuthRepository {
 
   /// Delete account
   Future<Either<Failure, void>> deleteAccount();
+
+  /// Get current profile
+  Future<Either<Failure, Map<String, dynamic>?>> getCurrentProfile();
+
+  /// Complete onboarding
+  Future<Either<Failure, void>> completeOnboarding({
+    required List<String> interests,
+    required bool isFaithUser,
+    required String coachingStyle,
+    required String themeMode,
+  });
 }

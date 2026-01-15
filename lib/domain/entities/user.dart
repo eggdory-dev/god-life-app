@@ -62,6 +62,10 @@ class UserSettings {
   final bool notificationsEnabled;
   final String? preferredNotificationTime;
   final bool onboardingCompleted;
+  final List<String>? interests;
+  final bool? isFaithUser;
+  final String? coachingStyle;
+  final String? provider; // 'email', 'google', 'apple'
 
   const UserSettings({
     required this.theme,
@@ -69,6 +73,10 @@ class UserSettings {
     this.notificationsEnabled = true,
     this.preferredNotificationTime,
     this.onboardingCompleted = false,
+    this.interests,
+    this.isFaithUser,
+    this.coachingStyle,
+    this.provider,
   });
 
   UserSettings copyWith({
@@ -77,6 +85,10 @@ class UserSettings {
     bool? notificationsEnabled,
     String? preferredNotificationTime,
     bool? onboardingCompleted,
+    List<String>? interests,
+    bool? isFaithUser,
+    String? coachingStyle,
+    String? provider,
   }) {
     return UserSettings(
       theme: theme ?? this.theme,
@@ -85,6 +97,10 @@ class UserSettings {
       preferredNotificationTime:
           preferredNotificationTime ?? this.preferredNotificationTime,
       onboardingCompleted: onboardingCompleted ?? this.onboardingCompleted,
+      interests: interests ?? this.interests,
+      isFaithUser: isFaithUser ?? this.isFaithUser,
+      coachingStyle: coachingStyle ?? this.coachingStyle,
+      provider: provider ?? this.provider,
     );
   }
 

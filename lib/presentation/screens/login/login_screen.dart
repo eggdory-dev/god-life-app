@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:god_life_app/core/providers/auth_providers.dart';
+
+import '../../providers/auth/auth_provider.dart';
+import '../../../core/errors/failures.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -32,33 +34,67 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     setState(() => _isLoading = true);
 
     try {
-      final authService = ref.read(authServiceProvider);
-
       if (_isSignUp) {
-        await authService.signUpWithEmail(
+        await ref.read(authProvider.notifier).signUpWithEmail(
           email: _emailController.text.trim(),
           password: _passwordController.text,
           name: _nameController.text.trim(),
         );
 
         if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('회원가입이 완료되었습니다!')),
+
+        // Check auth state
+        final authState = ref.read(authProvider);
+        authState.when(
+          data: (user) {
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('회원가입이 완료되었습니다!')),
+              );
+              context.go('/home');
+            }
+          },
+          error: (error, _) {
+            if (mounted) {
+              final message = error is Failure
+                  ? error.userMessage
+                  : error.toString();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('회원가입 실패: $message')),
+              );
+            }
+          },
+          loading: () {},
         );
       } else {
-        await authService.signInWithEmail(
+        await ref.read(authProvider.notifier).signInWithEmail(
           email: _emailController.text.trim(),
           password: _passwordController.text,
         );
-      }
 
-      if (!mounted) return;
-      context.go('/home');
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('오류: ${e.toString()}')),
-      );
+        if (!mounted) return;
+
+        // Check auth state
+        final authState = ref.read(authProvider);
+        authState.when(
+          data: (user) {
+            if (mounted) {
+              context.go('/home');
+            }
+          },
+          error: (error, _) {
+            if (mounted) {
+              final message = error is Failure
+                  ? error.userMessage
+                  : error.toString();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('로그인 실패: $message')),
+              );
+            }
+          },
+          loading: () {},
+        );
+      }
     } finally {
       if (mounted) {
         setState(() => _isLoading = false);
@@ -70,15 +106,29 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     setState(() => _isLoading = true);
 
     try {
-      final authService = ref.read(authServiceProvider);
-      await authService.signInWithGoogle();
+      await ref.read(authProvider.notifier).loginWithGoogle();
 
       if (!mounted) return;
-      context.go('/home');
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Google 로그인 실패: ${e.toString()}')),
+
+      // Check auth state
+      final authState = ref.read(authProvider);
+      authState.when(
+        data: (user) {
+          if (mounted) {
+            context.go('/home');
+          }
+        },
+        error: (error, _) {
+          if (mounted) {
+            final message = error is Failure
+                ? error.userMessage
+                : error.toString();
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Google 로그인 실패: $message')),
+            );
+          }
+        },
+        loading: () {},
       );
     } finally {
       if (mounted) {
@@ -91,15 +141,29 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     setState(() => _isLoading = true);
 
     try {
-      final authService = ref.read(authServiceProvider);
-      await authService.signInWithApple();
+      await ref.read(authProvider.notifier).loginWithApple();
 
       if (!mounted) return;
-      context.go('/home');
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Apple 로그인 실패: ${e.toString()}')),
+
+      // Check auth state
+      final authState = ref.read(authProvider);
+      authState.when(
+        data: (user) {
+          if (mounted) {
+            context.go('/home');
+          }
+        },
+        error: (error, _) {
+          if (mounted) {
+            final message = error is Failure
+                ? error.userMessage
+                : error.toString();
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Apple 로그인 실패: $message')),
+            );
+          }
+        },
+        loading: () {},
       );
     } finally {
       if (mounted) {

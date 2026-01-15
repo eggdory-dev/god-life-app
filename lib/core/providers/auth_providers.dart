@@ -1,9 +1,15 @@
+// DEPRECATED: This file is deprecated. Use presentation/providers/auth/auth_provider.dart instead.
+// This file will be removed in a future version.
+// All providers have been migrated to the new auth_provider.dart with clean architecture pattern.
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../services/auth_service.dart';
 
 /// AuthService Provider
+/// DEPRECATED: Use authRepositoryProvider from auth/auth_provider.dart instead
+@Deprecated('Use authRepositoryProvider from presentation/providers/auth/auth_provider.dart')
 final authServiceProvider = Provider<AuthService>((ref) {
   return AuthService();
 });

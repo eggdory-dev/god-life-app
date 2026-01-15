@@ -1,19 +1,19 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../data/datasources/remote/supabase_auth_datasource.dart';
+import '../../../data/repositories/supabase_auth_repository.dart';
 import '../../../domain/entities/user.dart';
 import '../../../domain/repositories/auth_repository.dart';
 import '../../../core/providers/core_providers.dart';
-import '../../../core/mocks/repositories/mock_auth_repository.dart';
 
 part 'auth_provider.g.dart';
 
 /// Auth repository provider
+/// Uses real Supabase implementation
 @riverpod
 AuthRepository authRepository(AuthRepositoryRef ref) {
-  final prefs = ref.watch(sharedPreferencesProvider);
-  // For Week 3-4, use MockAuthRepository
-  // In Week 11+, switch to real implementation
-  return MockAuthRepository(prefs);
+  final dataSource = SupabaseAuthDataSource();
+  return SupabaseAuthRepository(dataSource);
 }
 
 /// Auth state provider
@@ -28,6 +28,54 @@ class Auth extends _$Auth {
     return result.fold(
       (failure) => null,
       (user) => user,
+    );
+  }
+
+  /// Sign up with email
+  Future<void> signUpWithEmail({
+    required String email,
+    required String password,
+    required String name,
+  }) async {
+    state = const AsyncLoading();
+
+    final repo = ref.read(authRepositoryProvider);
+    final result = await repo.signUpWithEmail(
+      email: email,
+      password: password,
+      name: name,
+    );
+
+    result.fold(
+      (failure) {
+        state = AsyncError(failure, StackTrace.current);
+      },
+      (user) {
+        state = AsyncData(user);
+      },
+    );
+  }
+
+  /// Sign in with email
+  Future<void> signInWithEmail({
+    required String email,
+    required String password,
+  }) async {
+    state = const AsyncLoading();
+
+    final repo = ref.read(authRepositoryProvider);
+    final result = await repo.signInWithEmail(
+      email: email,
+      password: password,
+    );
+
+    result.fold(
+      (failure) {
+        state = AsyncError(failure, StackTrace.current);
+      },
+      (user) {
+        state = AsyncData(user);
+      },
     );
   }
 
@@ -139,4 +187,39 @@ class Auth extends _$Auth {
 Stream<User?> authStateChanges(AuthStateChangesRef ref) {
   final repo = ref.watch(authRepositoryProvider);
   return repo.authStateChanges;
+}
+
+/// Current user stream provider
+@riverpod
+Stream<User?> currentUserStream(CurrentUserStreamRef ref) {
+  return ref.watch(authStateChangesProvider);
+}
+
+/// Is authenticated provider
+@riverpod
+bool isAuthenticated(IsAuthenticatedRef ref) {
+  final userAsync = ref.watch(authProvider);
+  return userAsync.when(
+    data: (user) => user != null,
+    loading: () => false,
+    error: (_, __) => false,
+  );
+}
+
+/// Current profile provider
+@riverpod
+Future<Map<String, dynamic>?> currentProfile(CurrentProfileRef ref) async {
+  final repo = ref.watch(authRepositoryProvider);
+  final result = await repo.getCurrentProfile();
+  return result.fold(
+    (failure) => null,
+    (profile) => profile,
+  );
+}
+
+/// Onboarding completed provider
+@riverpod
+Future<bool> onboardingCompleted(OnboardingCompletedRef ref) async {
+  final profile = await ref.watch(currentProfileProvider.future);
+  return profile?['onboarding_completed'] ?? false;
 }

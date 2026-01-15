@@ -38,6 +38,23 @@ class MockAuthRepository implements AuthRepository {
   }
 
   @override
+  Future<Either<Failure, User>> signUpWithEmail({
+    required String email,
+    required String password,
+    required String name,
+  }) async {
+    return _performMockLogin('Email (Sign Up)');
+  }
+
+  @override
+  Future<Either<Failure, User>> signInWithEmail({
+    required String email,
+    required String password,
+  }) async {
+    return _performMockLogin('Email');
+  }
+
+  @override
   Future<Either<Failure, User>> loginWithGoogle() async {
     return _performMockLogin('Google');
   }
@@ -50,6 +67,16 @@ class MockAuthRepository implements AuthRepository {
   @override
   Future<Either<Failure, User>> loginWithKakao() async {
     return _performMockLogin('Kakao');
+  }
+
+  @override
+  Future<Either<Failure, void>> resetPassword(String email) async {
+    try {
+      await Future.delayed(const Duration(milliseconds: 500));
+      return const Right(null);
+    } catch (e) {
+      return Left(Failure.server(message: 'Password reset failed: $e'));
+    }
   }
 
   Future<Either<Failure, User>> _performMockLogin(String provider) async {
@@ -149,6 +176,63 @@ class MockAuthRepository implements AuthRepository {
       return const Right(null);
     } catch (e) {
       return Left(Failure.server(message: 'Delete account failed: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Map<String, dynamic>?>> getCurrentProfile() async {
+    try {
+      final currentUser = await _loadUser();
+      if (currentUser == null) {
+        return const Right(null);
+      }
+
+      // Return mock profile data
+      return Right({
+        'id': currentUser.id,
+        'email': currentUser.email,
+        'name': currentUser.name,
+        'profile_image_url': currentUser.photoUrl,
+        'onboarding_completed': currentUser.settings.onboardingCompleted,
+        'interests': currentUser.settings.interests,
+        'is_faith_user': currentUser.settings.isFaithUser,
+        'coaching_style': currentUser.settings.coachingStyle,
+        'theme_mode': currentUser.settings.theme.name,
+        'provider': currentUser.settings.provider,
+      });
+    } catch (e) {
+      return Left(Failure.unknown(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> completeOnboarding({
+    required List<String> interests,
+    required bool isFaithUser,
+    required String coachingStyle,
+    required String themeMode,
+  }) async {
+    try {
+      final currentUser = await _loadUser();
+      if (currentUser == null) {
+        return Left(Failure.authentication(message: 'User not logged in'));
+      }
+
+      final updatedSettings = currentUser.settings.copyWith(
+        interests: interests,
+        isFaithUser: isFaithUser,
+        coachingStyle: coachingStyle,
+        onboardingCompleted: true,
+      );
+
+      final updatedUser = currentUser.copyWith(settings: updatedSettings);
+
+      await _saveUser(updatedUser);
+      _authStateController.add(updatedUser);
+
+      return const Right(null);
+    } catch (e) {
+      return Left(Failure.server(message: 'Complete onboarding failed: $e'));
     }
   }
 

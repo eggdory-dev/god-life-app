@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../providers/auth/auth_provider.dart';
+
 /// Splash screen shown on app startup
-/// Will navigate to login or home based on auth state (Week 3-4)
+/// Checks auth state and navigates to appropriate screen
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
 
@@ -19,15 +21,38 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   }
 
   Future<void> _initialize() async {
-    // TODO: Check auth state in Week 3-4
-    // For now, just show splash for 2 seconds
+    // Show splash screen for 2 seconds
     await Future.delayed(const Duration(seconds: 2));
 
     if (!mounted) return;
 
-    // TODO: Navigate based on auth state
-    // For now, navigate to home screen to test GNB
-    context.go('/home');
+    // Check auth state
+    final authState = ref.read(authProvider);
+
+    authState.when(
+      data: (user) async {
+        if (user == null) {
+          // Not authenticated → go to login
+          if (mounted) context.go('/login');
+        } else {
+          // Check onboarding status
+          final onboardingDone = await ref.read(onboardingCompletedProvider.future);
+          if (mounted) {
+            if (onboardingDone) {
+              context.go('/home');
+            } else {
+              context.go('/onboarding');
+            }
+          }
+        }
+      },
+      loading: () {
+        if (mounted) context.go('/login');
+      },
+      error: (_, __) {
+        if (mounted) context.go('/login');
+      },
+    );
   }
 
   @override
