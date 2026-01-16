@@ -41,23 +41,6 @@ final authStateChangesProvider = AutoDisposeStreamProvider<User?>.internal(
 );
 
 typedef AuthStateChangesRef = AutoDisposeStreamProviderRef<User?>;
-String _$currentUserStreamHash() => r'54888efaeba20ee23e8337097c64cd7661f2289e';
-
-/// Current user stream provider
-///
-/// Copied from [currentUserStream].
-@ProviderFor(currentUserStream)
-final currentUserStreamProvider = AutoDisposeStreamProvider<User?>.internal(
-  currentUserStream,
-  name: r'currentUserStreamProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$currentUserStreamHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef CurrentUserStreamRef = AutoDisposeStreamProviderRef<User?>;
 String _$isAuthenticatedHash() => r'62702a4a8e880feb041cdf459d2a91a7446fd407';
 
 /// Is authenticated provider

@@ -30,10 +30,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
     initialLocation: '/',
     debugLogDiagnostics: true,
     refreshListenable: GoRouterRefreshStream(
-      ref.watch(currentUserStreamProvider.stream),
+      ref.watch(authStateChangesProvider.stream),
     ),
     redirect: (context, state) {
-      final user = ref.watch(authProvider).value;
+      final user = ref.read(authProvider).value;
       final isAuthenticated = user != null;
 
       final isSplash = state.matchedLocation == '/';
@@ -53,13 +53,13 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       if (isAuthenticated) {
         // Already on login page → redirect to app
         if (isLogin) {
-          final onboardingDone = ref.watch(onboardingCompletedProvider).value ?? false;
+          final onboardingDone = ref.read(onboardingCompletedProvider).value ?? false;
           return onboardingDone ? '/home' : '/onboarding';
         }
 
         // Trying to access app but onboarding not done
         if (!isOnboarding && isProtected) {
-          final onboardingDone = ref.watch(onboardingCompletedProvider).value ?? false;
+          final onboardingDone = ref.read(onboardingCompletedProvider).value ?? false;
           if (!onboardingDone) return '/onboarding';
         }
       }

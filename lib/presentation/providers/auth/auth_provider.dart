@@ -189,12 +189,6 @@ Stream<User?> authStateChanges(AuthStateChangesRef ref) {
   return repo.authStateChanges;
 }
 
-/// Current user stream provider
-@riverpod
-Stream<User?> currentUserStream(CurrentUserStreamRef ref) {
-  return ref.watch(authStateChangesProvider);
-}
-
 /// Is authenticated provider
 @riverpod
 bool isAuthenticated(IsAuthenticatedRef ref) {
