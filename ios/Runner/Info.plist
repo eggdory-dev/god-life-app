@@ -53,7 +53,9 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<!-- Supabase Deep Link -->
-				<string>io.supabase.godlifeapp</string>
+				<string>com.eggdory.godlifeapp</string>
+				<!-- Google Sign-In (deprecated - using Supabase OAuth) -->
+				<string>com.googleusercontent.apps.976410532455-jihrg0e4v41aqe4fa8efab92gnshr0st</string>
 			</array>
 		</dict>
 	</array>

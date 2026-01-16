@@ -31,6 +31,22 @@
 
   <title>god_life_app</title>
   <link rel="manifest" href="manifest.json">
+
+  <!-- Supabase OAuth Redirect Handler -->
+  <script>
+    // Handle OAuth redirect from Supabase
+    if (window.location.hash && window.opener) {
+      // Send hash to parent window (for popup flow)
+      window.opener.postMessage(
+        {
+          type: 'supabase.auth.token',
+          hash: window.location.hash
+        },
+        window.location.origin
+      );
+      window.close();
+    }
+  </script>
 </head>
 <body>
   <script src="flutter_bootstrap.js" async></script>

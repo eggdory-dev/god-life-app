@@ -1,6 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -8,13 +8,10 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/constants/app_constants.dart';
 import 'auth_remote_datasource.dart';
 
-/// Supabase + Firebase Auth Data Source
-/// Implements Firebase Auth + Supabase integration for authentication
+/// Supabase Auth Data Source
+/// Implements Supabase native OAuth for authentication
 class SupabaseAuthDataSource implements AuthRemoteDataSource {
   final SupabaseClient _supabase = Supabase.instance.client;
-  final firebase_auth.FirebaseAuth _firebaseAuth =
-      firebase_auth.FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   SupabaseAuthDataSource() {
     // Listen to auth state changes and persist session
@@ -83,63 +80,83 @@ class SupabaseAuthDataSource implements AuthRemoteDataSource {
   @override
   Future<AuthResponse> signInWithGoogle() async {
     try {
-      debugPrint('🔵 Google login started (Firebase + Supabase)');
+      debugPrint('🔵 Google login started (Supabase OAuth Flow)');
 
-      // 1. Google Sign-In
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      if (googleUser == null) {
-        debugPrint('⚠️ Google login cancelled');
+      // 1. Start OAuth flow with in-app WebView
+      final bool success = await _supabase.auth.signInWithOAuth(
+        OAuthProvider.google,
+        redirectTo: kIsWeb ? null : 'com.eggdory.godlifeapp://login-callback',
+        // Use in-app browser for seamless experience
+        authScreenLaunchMode: LaunchMode.platformDefault,
+      );
+
+      if (!success) {
+        debugPrint('⚠️ Google OAuth flow failed to start');
         throw Exception('Google login was cancelled');
       }
 
-      debugPrint('🟢 Google Sign-In success: ${googleUser.email}');
+      debugPrint('✅ OAuth flow initiated, waiting for auth state change...');
 
-      // 2. Get Google auth credentials
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
-      final String? accessToken = googleAuth.accessToken;
-      final String? idToken = googleAuth.idToken;
+      // 2. Wait for auth state change (login completion)
+      final completer = Completer<AuthResponse>();
+      StreamSubscription<AuthState>? subscription;
 
-      if (idToken == null) {
-        debugPrint('🔴 Cannot get ID Token');
-        throw Exception('Cannot get Google ID token');
-      }
+      subscription = _supabase.auth.onAuthStateChange.listen(
+        (event) {
+          debugPrint('🔔 Auth State Changed: ${event.event}');
 
-      debugPrint('🎫 ID Token obtained');
+          if (event.event == AuthChangeEvent.signedIn && event.session != null) {
+            debugPrint('✅ User signed in: ${event.session!.user.email}');
 
-      // 3. Sign in with Firebase Auth
-      final firebase_auth.OAuthCredential credential =
-          firebase_auth.GoogleAuthProvider.credential(
-        accessToken: accessToken,
-        idToken: idToken,
+            if (!completer.isCompleted) {
+              completer.complete(AuthResponse(
+                session: event.session,
+                user: event.session!.user,
+              ));
+            }
+            subscription?.cancel();
+          } else if (event.event == AuthChangeEvent.signedOut) {
+            debugPrint('⚠️ Sign out detected during login');
+          }
+        },
+        onError: (error) {
+          debugPrint('🔴 Auth state change error: $error');
+          if (!completer.isCompleted) {
+            completer.completeError(error);
+          }
+          subscription?.cancel();
+        },
       );
 
-      final firebase_auth.UserCredential userCredential =
-          await _firebaseAuth.signInWithCredential(credential);
-
-      debugPrint('🔥 Firebase login success: ${userCredential.user?.email}');
-
-      // 4. Sign in to Supabase with ID token
-      final response = await _supabase.auth.signInWithIdToken(
-        provider: OAuthProvider.google,
-        idToken: idToken,
-        accessToken: accessToken,
+      // 3. Wait for login to complete (with timeout)
+      final authResponse = await completer.future.timeout(
+        const Duration(seconds: 30),
+        onTimeout: () {
+          subscription?.cancel();
+          throw Exception('Google 로그인 시간 초과. 다시 시도해주세요.');
+        },
       );
 
-      debugPrint('✅ Supabase login success: ${response.user?.email}');
+      debugPrint('✅ Supabase login success: ${authResponse.user?.email}');
 
-      // 5. Ensure profile exists
-      if (response.user != null) {
+      // 4. Ensure profile exists
+      if (authResponse.user != null) {
+        final metadata = authResponse.user!.userMetadata ?? {};
+        final name = metadata['full_name'] ??
+                     metadata['name'] ??
+                     authResponse.user!.email?.split('@').first ??
+                     'Google User';
+
         await _ensureProfileExists(
-          userId: response.user!.id,
-          email: response.user!.email!,
-          name: googleUser.displayName ?? 'Google User',
+          userId: authResponse.user!.id,
+          email: authResponse.user!.email!,
+          name: name,
           provider: 'google',
-          profileImageUrl: googleUser.photoUrl,
+          profileImageUrl: metadata['avatar_url'] as String?,
         );
       }
 
-      return response;
+      return authResponse;
     } catch (e, stackTrace) {
       debugPrint('🔴 Google login failed: $e');
       debugPrint('Stack trace: $stackTrace');
@@ -199,12 +216,6 @@ class SupabaseAuthDataSource implements AuthRemoteDataSource {
   @override
   Future<void> signOut() async {
     try {
-      // Google Sign-Out
-      await _googleSignIn.signOut();
-
-      // Firebase Sign-Out
-      await _firebaseAuth.signOut();
-
       // Supabase Sign-Out
       await _supabase.auth.signOut();
 
