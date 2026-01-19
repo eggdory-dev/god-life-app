@@ -107,17 +107,14 @@ class SupabaseAuthRepository implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, User>> loginWithGoogle() async {
+  Future<Either<Failure, User?>> loginWithGoogle() async {
     try {
-      final response = await _dataSource.signInWithGoogle();
+      // OAuth flow is async - this just opens the browser
+      // Actual login completion will come via authStateChanges
+      await _dataSource.signInWithGoogle();
 
-      if (response.user == null) {
-        return Left(Failure.authentication(message: 'Google login failed'));
-      }
-
-      final profile = await _dataSource.getCurrentProfile();
-      final user = _mapProfileToUser(response.user!, profile ?? {});
-      return Right(user);
+      // Return null user - login completion handled via authStateChanges
+      return const Right(null);
     } on AuthException catch (e) {
       return Left(Failure.authentication(message: e.message));
     } catch (e) {

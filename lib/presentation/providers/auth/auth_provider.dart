@@ -80,6 +80,8 @@ class Auth extends _$Auth {
   }
 
   /// Login with Google
+  /// OAuth flow is async - browser opens and login completes via deep link callback
+  /// UI should watch authStateChanges for login completion
   Future<void> loginWithGoogle() async {
     state = const AsyncLoading();
 
@@ -91,7 +93,13 @@ class Auth extends _$Auth {
         state = AsyncError(failure, StackTrace.current);
       },
       (user) {
-        state = AsyncData(user);
+        // OAuth returns null - keep loading state
+        // Actual login completion will update state via authStateChanges
+        // which is watched by GoRouter's refreshListenable
+        if (user != null) {
+          state = AsyncData(user);
+        }
+        // If user is null, keep loading - waiting for OAuth callback
       },
     );
   }

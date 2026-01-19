@@ -25,8 +25,8 @@ abstract class AuthRepository {
     required String password,
   });
 
-  /// Login with Google
-  Future<Either<Failure, User>> loginWithGoogle();
+  /// Login with Google (OAuth flow - returns null, actual login via authStateChanges)
+  Future<Either<Failure, User?>> loginWithGoogle();
 
   /// Login with Apple
   Future<Either<Failure, User>> loginWithApple();

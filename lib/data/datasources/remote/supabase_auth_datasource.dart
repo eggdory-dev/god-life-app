@@ -15,10 +15,30 @@ class SupabaseAuthDataSource implements AuthRemoteDataSource {
 
   SupabaseAuthDataSource() {
     // Listen to auth state changes and persist session
-    _supabase.auth.onAuthStateChange.listen((event) {
+    _supabase.auth.onAuthStateChange.listen((event) async {
       if (event.event == AuthChangeEvent.signedIn ||
           event.event == AuthChangeEvent.tokenRefreshed) {
         _persistSession(event.session);
+
+        // Ensure profile exists for OAuth users
+        if (event.event == AuthChangeEvent.signedIn && event.session?.user != null) {
+          final user = event.session!.user;
+          final metadata = user.userMetadata ?? {};
+          final provider = user.appMetadata['provider'] as String? ?? 'oauth';
+
+          final name = metadata['full_name'] ??
+                       metadata['name'] ??
+                       user.email?.split('@').first ??
+                       'User';
+
+          await _ensureProfileExists(
+            userId: user.id,
+            email: user.email ?? '',
+            name: name,
+            provider: provider,
+            profileImageUrl: metadata['avatar_url'] as String?,
+          );
+        }
       } else if (event.event == AuthChangeEvent.signedOut) {
         _clearSession();
       }
@@ -82,81 +102,23 @@ class SupabaseAuthDataSource implements AuthRemoteDataSource {
     try {
       debugPrint('🔵 Google login started (Supabase OAuth Flow)');
 
-      // 1. Start OAuth flow with in-app WebView
+      // 1. Start OAuth flow - this opens browser and returns immediately
       final bool success = await _supabase.auth.signInWithOAuth(
         OAuthProvider.google,
         redirectTo: kIsWeb ? null : 'com.eggdory.godlifeapp://login-callback',
-        // Use in-app browser for seamless experience
-        authScreenLaunchMode: LaunchMode.platformDefault,
+        authScreenLaunchMode: LaunchMode.externalApplication,
       );
 
       if (!success) {
         debugPrint('⚠️ Google OAuth flow failed to start');
-        throw Exception('Google login was cancelled');
+        throw Exception('Google 로그인이 취소되었습니다.');
       }
 
-      debugPrint('✅ OAuth flow initiated, waiting for auth state change...');
+      debugPrint('✅ OAuth flow initiated, browser opened');
 
-      // 2. Wait for auth state change (login completion)
-      final completer = Completer<AuthResponse>();
-      StreamSubscription<AuthState>? subscription;
-
-      subscription = _supabase.auth.onAuthStateChange.listen(
-        (event) {
-          debugPrint('🔔 Auth State Changed: ${event.event}');
-
-          if (event.event == AuthChangeEvent.signedIn && event.session != null) {
-            debugPrint('✅ User signed in: ${event.session!.user.email}');
-
-            if (!completer.isCompleted) {
-              completer.complete(AuthResponse(
-                session: event.session,
-                user: event.session!.user,
-              ));
-            }
-            subscription?.cancel();
-          } else if (event.event == AuthChangeEvent.signedOut) {
-            debugPrint('⚠️ Sign out detected during login');
-          }
-        },
-        onError: (error) {
-          debugPrint('🔴 Auth state change error: $error');
-          if (!completer.isCompleted) {
-            completer.completeError(error);
-          }
-          subscription?.cancel();
-        },
-      );
-
-      // 3. Wait for login to complete (with timeout)
-      final authResponse = await completer.future.timeout(
-        const Duration(seconds: 30),
-        onTimeout: () {
-          subscription?.cancel();
-          throw Exception('Google 로그인 시간 초과. 다시 시도해주세요.');
-        },
-      );
-
-      debugPrint('✅ Supabase login success: ${authResponse.user?.email}');
-
-      // 4. Ensure profile exists
-      if (authResponse.user != null) {
-        final metadata = authResponse.user!.userMetadata ?? {};
-        final name = metadata['full_name'] ??
-                     metadata['name'] ??
-                     authResponse.user!.email?.split('@').first ??
-                     'Google User';
-
-        await _ensureProfileExists(
-          userId: authResponse.user!.id,
-          email: authResponse.user!.email!,
-          name: name,
-          provider: 'google',
-          profileImageUrl: metadata['avatar_url'] as String?,
-        );
-      }
-
-      return authResponse;
+      // 2. Return empty response - actual auth will come via onAuthStateChange
+      // The UI should listen to authStateChanges to handle login completion
+      return AuthResponse(session: null, user: null);
     } catch (e, stackTrace) {
       debugPrint('🔴 Google login failed: $e');
       debugPrint('Stack trace: $stackTrace');

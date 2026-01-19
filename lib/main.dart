@@ -9,6 +9,7 @@ import 'core/config/supabase_config.dart';
 import 'core/notifications/notification_service.dart';
 import 'core/providers/core_providers.dart';
 import 'core/router/app_router.dart';
+import 'core/router/filtered_route_information_provider.dart';
 import 'core/theme/app_theme.dart';
 
 void main() async {
@@ -54,11 +55,32 @@ void main() async {
   );
 }
 
-class GodLifeApp extends ConsumerWidget {
+class GodLifeApp extends ConsumerStatefulWidget {
   const GodLifeApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<GodLifeApp> createState() => _GodLifeAppState();
+}
+
+class _GodLifeAppState extends ConsumerState<GodLifeApp> {
+  late final FilteredRouteInformationProvider _routeInformationProvider;
+
+  @override
+  void initState() {
+    super.initState();
+    _routeInformationProvider = FilteredRouteInformationProvider(
+      initialRouteInformation: RouteInformation(uri: Uri.parse('/')),
+    );
+  }
+
+  @override
+  void dispose() {
+    _routeInformationProvider.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final router = ref.watch(goRouterProvider);
     final appTheme = ref.watch(themeModeProvider);
 
@@ -71,8 +93,11 @@ class GodLifeApp extends ConsumerWidget {
       darkTheme: AppThemeData.darkTheme(appTheme),
       themeMode: ThemeMode.system,
 
-      // Router configuration
-      routerConfig: router,
+      // Router configuration with custom route information provider
+      routerDelegate: router.routerDelegate,
+      routeInformationParser: router.routeInformationParser,
+      routeInformationProvider: _routeInformationProvider,
+      backButtonDispatcher: router.backButtonDispatcher,
 
       // Localization will be added in future phases
     );

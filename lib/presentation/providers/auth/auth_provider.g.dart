@@ -94,7 +94,7 @@ final onboardingCompletedProvider = AutoDisposeFutureProvider<bool>.internal(
 );
 
 typedef OnboardingCompletedRef = AutoDisposeFutureProviderRef<bool>;
-String _$authHash() => r'790ed5d35cd370d895d41c7f98360df5b80cb316';
+String _$authHash() => r'd06501589a3c8ce8e24a313b1d5b080ab285e871';
 
 /// Auth state provider
 /// Manages current user authentication state
