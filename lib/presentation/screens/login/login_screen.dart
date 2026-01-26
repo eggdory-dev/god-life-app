@@ -43,29 +43,26 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
         if (!mounted) return;
 
-        // Check auth state
         final authState = ref.read(authProvider);
-        authState.when(
-          data: (user) {
-            if (mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('회원가입이 완료되었습니다!')),
-              );
-              context.go('/home');
-            }
-          },
-          error: (error, _) {
-            if (mounted) {
-              final message = error is Failure
-                  ? error.userMessage
-                  : error.toString();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('회원가입 실패: $message')),
-              );
-            }
-          },
-          loading: () {},
-        );
+
+        if (authState.hasValue && authState.value != null) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('회원가입이 완료되었습니다!')),
+            );
+            // New users always need onboarding
+            context.go('/onboarding');
+          }
+        } else if (authState.hasError) {
+          if (mounted) {
+            final message = authState.error is Failure
+                ? (authState.error as Failure).userMessage
+                : authState.error.toString();
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('회원가입 실패: $message')),
+            );
+          }
+        }
       } else {
         await ref.read(authProvider.notifier).signInWithEmail(
           email: _emailController.text.trim(),
@@ -74,26 +71,25 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
         if (!mounted) return;
 
-        // Check auth state
         final authState = ref.read(authProvider);
-        authState.when(
-          data: (user) {
-            if (mounted) {
-              context.go('/home');
-            }
-          },
-          error: (error, _) {
-            if (mounted) {
-              final message = error is Failure
-                  ? error.userMessage
-                  : error.toString();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('로그인 실패: $message')),
-              );
-            }
-          },
-          loading: () {},
-        );
+
+        if (authState.hasValue && authState.value != null) {
+          // Check onboarding status
+          ref.invalidate(onboardingCompletedProvider);
+          final onboardingDone = await ref.read(onboardingCompletedProvider.future);
+          if (mounted) {
+            context.go(onboardingDone ? '/home' : '/onboarding');
+          }
+        } else if (authState.hasError) {
+          if (mounted) {
+            final message = authState.error is Failure
+                ? (authState.error as Failure).userMessage
+                : authState.error.toString();
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('로그인 실패: $message')),
+            );
+          }
+        }
       }
     } finally {
       if (mounted) {
@@ -110,26 +106,34 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
       if (!mounted) return;
 
-      // Check auth state
-      final authState = ref.read(authProvider);
-      authState.when(
-        data: (user) {
-          if (mounted) {
-            context.go('/home');
-          }
-        },
-        error: (error, _) {
-          if (mounted) {
-            final message = error is Failure
-                ? error.userMessage
-                : error.toString();
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Google 로그인 실패: $message')),
-            );
-          }
-        },
-        loading: () {},
-      );
+      // OAuth flow completed - invalidate and refresh auth state
+      ref.invalidate(authProvider);
+      final user = await ref.read(authProvider.future);
+
+      if (!mounted) return;
+
+      if (user != null) {
+        // Check onboarding status
+        ref.invalidate(onboardingCompletedProvider);
+        final onboardingDone = await ref.read(onboardingCompletedProvider.future);
+        if (mounted) {
+          context.go(onboardingDone ? '/home' : '/onboarding');
+        }
+      } else {
+        // Login failed or cancelled
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Google 로그인이 취소되었습니다')),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        final message = e is Failure ? e.userMessage : e.toString();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Google 로그인 실패: $message')),
+        );
+      }
     } finally {
       if (mounted) {
         setState(() => _isLoading = false);
@@ -145,26 +149,34 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
       if (!mounted) return;
 
-      // Check auth state
-      final authState = ref.read(authProvider);
-      authState.when(
-        data: (user) {
-          if (mounted) {
-            context.go('/home');
-          }
-        },
-        error: (error, _) {
-          if (mounted) {
-            final message = error is Failure
-                ? error.userMessage
-                : error.toString();
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Apple 로그인 실패: $message')),
-            );
-          }
-        },
-        loading: () {},
-      );
+      // Invalidate and refresh auth state
+      ref.invalidate(authProvider);
+      final user = await ref.read(authProvider.future);
+
+      if (!mounted) return;
+
+      if (user != null) {
+        // Check onboarding status
+        ref.invalidate(onboardingCompletedProvider);
+        final onboardingDone = await ref.read(onboardingCompletedProvider.future);
+        if (mounted) {
+          context.go(onboardingDone ? '/home' : '/onboarding');
+        }
+      } else {
+        // Login failed or cancelled
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Apple 로그인이 취소되었습니다')),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        final message = e is Failure ? e.userMessage : e.toString();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Apple 로그인 실패: $message')),
+        );
+      }
     } finally {
       if (mounted) {
         setState(() => _isLoading = false);

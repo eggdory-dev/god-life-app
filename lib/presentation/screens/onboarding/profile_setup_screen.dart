@@ -78,7 +78,6 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
                     }
                     return null;
                   },
-                  textCapitalization: TextCapitalization.words,
                 ),
 
                 const Spacer(),

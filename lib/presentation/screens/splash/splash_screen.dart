@@ -21,38 +21,30 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   }
 
   Future<void> _initialize() async {
-    // Show splash screen for 2 seconds
-    await Future.delayed(const Duration(seconds: 2));
+    // Show splash screen for minimum duration
+    await Future.delayed(const Duration(milliseconds: 1500));
 
     if (!mounted) return;
 
-    // Check auth state
-    final authState = ref.read(authProvider);
+    // Wait for auth state to be ready
+    final user = await ref.read(authProvider.future);
 
-    authState.when(
-      data: (user) async {
-        if (user == null) {
-          // Not authenticated → go to login
-          if (mounted) context.go('/login');
+    if (!mounted) return;
+
+    if (user == null) {
+      // Not authenticated → go to login
+      context.go('/login');
+    } else {
+      // Authenticated → check onboarding status
+      final onboardingDone = await ref.read(onboardingCompletedProvider.future);
+      if (mounted) {
+        if (onboardingDone) {
+          context.go('/home');
         } else {
-          // Check onboarding status
-          final onboardingDone = await ref.read(onboardingCompletedProvider.future);
-          if (mounted) {
-            if (onboardingDone) {
-              context.go('/home');
-            } else {
-              context.go('/onboarding');
-            }
-          }
+          context.go('/onboarding');
         }
-      },
-      loading: () {
-        if (mounted) context.go('/login');
-      },
-      error: (_, __) {
-        if (mounted) context.go('/login');
-      },
-    );
+      }
+    }
   }
 
   @override

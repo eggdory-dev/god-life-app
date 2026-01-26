@@ -15,16 +15,46 @@ import 'core/theme/app_theme.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Handle GoRouter deep link errors (Supabase OAuth callbacks)
+  final originalOnError = FlutterError.onError;
+  FlutterError.onError = (FlutterErrorDetails details) {
+    // Ignore GoRouter origin errors for custom schemes (Supabase deep links)
+    if (details.exception is StateError &&
+        details.exception.toString().contains('Origin is only applicable to schemes http and https')) {
+      // Supabase handles these deep links, so we can safely ignore this error
+      debugPrint('🔇 Ignoring GoRouter deep link error (handled by Supabase)');
+      return;
+    }
+    // Call original error handler for other errors
+    if (originalOnError != null) {
+      originalOnError(details);
+    }
+  };
+
   // Initialize Firebase
   await Firebase.initializeApp();
   debugPrint('🔥 Firebase 초기화 완료');
 
-  // Initialize Supabase
+  // Initialize Supabase with persistent session
   await Supabase.initialize(
     url: SupabaseConfig.supabaseUrl,
     anonKey: SupabaseConfig.supabaseAnonKey,
+    authOptions: const FlutterAuthClientOptions(
+      authFlowType: AuthFlowType.pkce,
+      // Automatically persist session to local storage (SharedPreferences)
+      // Automatically refresh token when expired
+    ),
+    // Default localStorage uses SharedPreferences
   );
   debugPrint('✅ Supabase 초기화 완료');
+
+  // Check if session exists on startup
+  final session = Supabase.instance.client.auth.currentSession;
+  if (session != null) {
+    debugPrint('✅ 저장된 세션 복원됨: ${session.user.email}');
+  } else {
+    debugPrint('ℹ️ 저장된 세션 없음');
+  }
 
   // Auth state change listener for debugging
   Supabase.instance.client.auth.onAuthStateChange.listen((data) {

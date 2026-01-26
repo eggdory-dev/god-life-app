@@ -225,6 +225,7 @@ class SupabaseAuthRepository implements AuthRepository {
         'coaching_style': settings.personality.name,
         'interests': settings.interests,
         'is_faith_user': settings.isFaithUser,
+        'onboarding_completed': settings.onboardingCompleted,
       }).eq('id', supabaseUser.id);
 
       // Fetch updated profile

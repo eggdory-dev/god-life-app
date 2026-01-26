@@ -33,7 +33,21 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ref.watch(authStateChangesProvider.stream),
     ),
     redirect: (context, state) {
-      final user = ref.read(authProvider).value;
+      // Skip redirect for custom schemes (Supabase deep links)
+      final scheme = state.uri.scheme;
+      if (scheme != 'http' && scheme != 'https' && scheme.isNotEmpty) {
+        return null; // Let Supabase handle deep links
+      }
+
+      // Get auth state - check if loading
+      final authAsync = ref.read(authProvider);
+
+      // Don't redirect while auth state is loading
+      if (authAsync.isLoading) {
+        return null;
+      }
+
+      final user = authAsync.valueOrNull;
       final isAuthenticated = user != null;
 
       final isSplash = state.matchedLocation == '/';
@@ -53,13 +67,19 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       if (isAuthenticated) {
         // Already on login page → redirect to app
         if (isLogin) {
-          final onboardingDone = ref.read(onboardingCompletedProvider).value ?? false;
+          final onboardingAsync = ref.read(onboardingCompletedProvider);
+          // Don't redirect while onboarding state is loading
+          if (onboardingAsync.isLoading) return null;
+          final onboardingDone = onboardingAsync.valueOrNull ?? false;
           return onboardingDone ? '/home' : '/onboarding';
         }
 
         // Trying to access app but onboarding not done
         if (!isOnboarding && isProtected) {
-          final onboardingDone = ref.read(onboardingCompletedProvider).value ?? false;
+          final onboardingAsync = ref.read(onboardingCompletedProvider);
+          // Don't redirect while onboarding state is loading
+          if (onboardingAsync.isLoading) return null;
+          final onboardingDone = onboardingAsync.valueOrNull ?? false;
           if (!onboardingDone) return '/onboarding';
         }
       }

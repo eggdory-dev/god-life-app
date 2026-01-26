@@ -102,10 +102,11 @@ class SupabaseAuthDataSource implements AuthRemoteDataSource {
     try {
       debugPrint('🔵 Google login started (Supabase OAuth Flow)');
 
-      // 1. Start OAuth flow - this opens browser and returns immediately
+      // 1. Start OAuth flow with external browser (iOS compatibility)
       final bool success = await _supabase.auth.signInWithOAuth(
         OAuthProvider.google,
         redirectTo: kIsWeb ? null : 'com.eggdory.godlifeapp://login-callback',
+        // Use external browser for iOS compatibility
         authScreenLaunchMode: LaunchMode.externalApplication,
       );
 
@@ -207,7 +208,7 @@ class SupabaseAuthDataSource implements AuthRemoteDataSource {
           .from('profiles')
           .select()
           .eq('id', currentUser!.id)
-          .single();
+          .maybeSingle();
 
       return response;
     } catch (e) {
